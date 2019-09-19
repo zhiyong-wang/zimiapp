@@ -4,43 +4,47 @@ import { BG_COLOR } from './../shared/contants.js'
 import board from './board.js'
 import questions from './questions.js'
 
-export default  class Zimi {
+class Zimi {
   constructor() {
     const { winWidth, winHeight } = getWindowRectSync()
     this.width=winWidth
     this.height=winHeight
     
+    this.cellWidth=this.width/12
+    
+    this.boardWidth = this.cellWidth*10
+    this.boardHeight = this.cellWidth*10
+    this.board_X = this.cellWidth
+    this.board_Y=60
+    
     this.cells=[]
     this.presentCell=[]
       
     this.startTouchtime=0    
-
+   
   }
   init() {
     wx.offTouchStart()
     console.log("onload") 
    // console.log(data.questions)
-    this.requestZimi() 
+
  
     wx.onTouchStart((event) => {this.startTouchtime = event.timeStamp})
     
     wx.onTouchEnd((event) => {this.handleTouch(event)})
 
-   
+    this.requestZimi() 
   }
 
   render(){
     screenCtx.clearRect(0, 0, this.width, this.height);
     screenCtx.fillStyle = BG_COLOR
     screenCtx.fillRect(0, 0, this.width, this.height)
-    setTimeout(() => {
-    board.cells = this.cells
-      board.presentCell = this.presentCell
-      board.render()
+  
+    board.render(this.cells,this.presentCell)
 
-      questions.items = this.questions
-      questions.render()},0)
-    
+    questions.items = this.questions
+    questions.render()    
 
   }
   requestZimi () {
@@ -58,16 +62,32 @@ export default  class Zimi {
 }
 
 handleTouch(event){
+  //console.log(event)
   const { clientX, clientY } = event.changedTouches[0]
   let endTouchtime=event.timeStamp
   let touchTime=endTouchtime - this.startTouchtime
-  this.presentCell=board.handleTouch(clientX,clientY,touchTime)
-  //console.log(this.presentCell)
+  
 
-  this.render()
+  let board_row = Math.floor((clientY - this.board_Y) / this.cellWidth)
+  let board_col = Math.floor((clientX - this.board_X) / this.cellWidth)
+  if (board_row >= 0 && board_col >= 0 && board_row < 10 && board_col < 10) {
+    console.log(board_row, board_col)
+    if (this.presentCell.includes(board_row * 10 + board_col) && touchTime > 400) {
+        console.log(touchTime)
+        console.log("callAnswer")
+      }
+      else {
+      this.presentCell = board.setpresentCell(board_row, board_col,this.cells,this.presentCell)
+      this.render()
 
+      }
+    }
+
+    //  this.render()
+    // }
+  }
+  
+  
 
 }
-
-
-}
+export default new Zimi()

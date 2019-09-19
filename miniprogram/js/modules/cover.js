@@ -4,6 +4,7 @@ import Zimi from './zimi.js'
 import { BG_COLOR } from './../shared/contants.js'
 const BG_IMG_SRC ='images/cover.png'
 const { winWidth, winHeight } = getWindowRectSync()
+import zimi from './zimi.js'
 
 class Cover {
   constructor() {
@@ -48,8 +49,7 @@ class Cover {
   //  console.log(clientX)
     if (clientX >= 20 && clientX <= 100 && clientY >= (winHeight * 0.50 +18) && clientY<=(winHeight * 0.50 + 35) )
     {console.log("loadzimi")
-      let  zimi=new Zimi()
-      zimi.init()
+      zimi=zimi.init()
     }
   } 
 }
