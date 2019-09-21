@@ -49,7 +49,7 @@ class Cover {
   //  console.log(clientX)
     if (clientX >= 20 && clientX <= 100 && clientY >= (winHeight * 0.50 +18) && clientY<=(winHeight * 0.50 + 35) )
     {console.log("loadzimi")
-      zimi=zimi.init()
+      zimi.init()
     }
   } 
 }

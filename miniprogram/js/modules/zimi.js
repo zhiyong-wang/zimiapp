@@ -19,32 +19,48 @@ class Zimi {
     
     this.cells=[]
     this.presentCell=[]
+
+    
+    this.questions=[]
+    this.question_index=0
+    this.presentQuestions=[]
+
+    this.touchStartY = 0
+
       
-    this.startTouchtime=0    
+    this.startTouchtime=0   
+    this.moveDistance=0 
    
   }
   init() {
     wx.offTouchStart()
     console.log("onload") 
    // console.log(data.questions)
-
- 
-    wx.onTouchStart((event) => {this.startTouchtime = event.timeStamp})
     
-    wx.onTouchEnd((event) => {this.handleTouch(event)})
-
     this.requestZimi() 
+ 
+    wx.onTouchStart((event) => {this.startTouchtime = event.timeStamp
+     this.touchStartY= event.changedTouches[0].clientY})    
+    wx.onTouchEnd((event) => {this.handleTouch(event)})
+   wx.onTouchMove((event) => {this.handleTouchmove(event)})
+    
   }
 
   render(){
+    console.log("render")
     screenCtx.clearRect(0, 0, this.width, this.height);
     screenCtx.fillStyle = BG_COLOR
     screenCtx.fillRect(0, 0, this.width, this.height)
-  
-    board.render(this.cells,this.presentCell)
 
-    questions.items = this.questions
-    questions.render()    
+    board.render(this.cells,this.presentCell) 
+    this.setPresentQuestions() 
+    questions.render(this.presentQuestions,this.moveDistance)  
+
+    screenCtx.textAlign = 'left'
+    screenCtx.textBaseline = "top"
+    screenCtx.font = "15px 宋体"
+    screenCtx.fillStyle = "red"
+    screenCtx.fillText("问：",0, 0)
 
   }
   requestZimi () {
@@ -66,6 +82,7 @@ handleTouch(event){
   const { clientX, clientY } = event.changedTouches[0]
   let endTouchtime=event.timeStamp
   let touchTime=endTouchtime - this.startTouchtime
+
   
 
   let board_row = Math.floor((clientY - this.board_Y) / this.cellWidth)
@@ -78,14 +95,76 @@ handleTouch(event){
       }
       else {
       this.presentCell = board.setpresentCell(board_row, board_col,this.cells,this.presentCell)
-      this.render()
+      console.log(this.cells[this.presentCell[0]])
 
       }
+
     }
 
-    //  this.render()
-    // }
+  if (clientY>questions.y){
+    if(clientY-this.touchStartY<5) //点击直接选择
+    { 
+      this.question_index = this.question_index + Math.round((clientY-questions.y)/questions.perWidth)-5
+        if (this.question_index < 0) { this.question_index = this.questions.length +this.question_index}
+        if (this.question_index >= this.questions.length) { this.question_index = this.question_index-this.questions.length  }
+
+   console.log(this.question_index) 
+
   }
+  else{
+      this.question_index = this.question_index + Math.round((clientY - questions.y) / questions.perWidth) - 5
+      if (this.question_index < 0) { this.question_index = this.questions.length + this.question_index }
+      if (this.question_index >= this.questions.length) { this.question_index = this.question_index - this.questions.length }
+
+  }
+
+
+  }
+
+  this.moveDistance = 0
+
+
+  this.render()
+
+  }
+
+
+
+handleTouchmove(event) {
+  if(this.touchStartY>questions.y){
+  console.log("move")
+  console.log(event.changedTouches[0].clientY)
+  this. moveDistance = event.changedTouches[0].clientY-this.touchStartY
+
+  console.log(this.moveDistance)
+ // this.touchStartY = event.changedTouches[0].clientY
+ // console.log(this.question_index)
+  
+  
+  this.render()
+  }
+
+}
+setPresentQuestions(){
+
+   this.presentQuestions=[]
+   for(let i=this.question_index,j=0;j<5;i--,j++){
+    // console.log( i)
+      if(i<0){i=this.questions.length-1}
+//console.log(j+"d   "+i)
+     this.presentQuestions.unshift(this.questions[i])
+  //  console.log(this.questions[i])
+   }
+  for (let i = this.question_index+1,j=0; j < 5; i++ , j++) {
+  // console.log(j)
+    if (i >=this.questions.length) { i = 0 }
+  // console.log(this.questions[i])
+    this.presentQuestions.push(this.questions[i])
+  }
+//console.log(this.presentQuestions)
+
+
+}
   
   
 

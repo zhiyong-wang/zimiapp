@@ -1,7 +1,7 @@
 import { screenCtx } from './../shared/canvas.js'
 import { getWindowRectSync } from './../shared/util.js'
 import {BOARD_LINE_COLOR, BOARD_DARK_COLOR,BOARD_GREY_COLOR,BOARD_LIGHT_COLOR } from './../shared/contants.js'
-import Zimi from './zimi.js'
+
 
 class Board {
   constructor() {
@@ -15,9 +15,9 @@ class Board {
     this.cellWidth=winWidth / 12
     this.cellHeight= winWidth / 12
 
-   // this.titleCanvas = wx.createCanvas()
+  
  this.boardCanvas = wx.createCanvas()
-   // this.titleCtx = this.titleCanvas.getContext('2d')
+   
   this.boardCtx=this.boardCanvas.getContext('2d')
      
 
@@ -35,7 +35,7 @@ class Board {
 
    
    console.log("boardDraw")
-   console.log(this)
+ //  console.log(this)
     for (let i=0;i<10;i++){
       for(let j=0;j<10;j++){
         //   console.log(this.cells[i * 10 + j])
@@ -43,6 +43,8 @@ class Board {
         
              if(presentCell.includes(i*10+j)){
                this.boardCtx.fillStyle = BOARD_LIGHT_COLOR
+
+          
              }else{
                this.boardCtx.fillStyle = BOARD_GREY_COLOR
                }
@@ -71,7 +73,7 @@ class Board {
       this.boardCtx.lineTo(x_end, line_y)
       this.boardCtx.stroke()
 
-      console.log(this.boardCtx.strokeStyle)
+    //  console.log(this.boardCtx.strokeStyle)
       //垂直线条
      
       let line_x = Math.floor(this.cellWidth * i )+0.5
@@ -82,7 +84,7 @@ class Board {
       this.boardCtx.moveTo(line_x, y_begin)
       this.boardCtx.lineTo(line_x, y_end)
       this.boardCtx.stroke()
-      console.log(i + ':' + line_x)
+    //  console.log(i + ':' + line_x)
     }
   //  this.boardCtx.stroke()
  }
