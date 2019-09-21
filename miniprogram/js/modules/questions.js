@@ -10,50 +10,57 @@ class Questions {
     this.height = winHeight- winWidth*10/12-100
 
     this.x = 10
-    this.y = 80 + winWidth*10/12
+    this.y = 100 + winWidth*10/12
 
     this.perWidth = 25
 
   this.questionsCanvas = wx.createCanvas()
+  
   this.questionsCtx = this.questionsCanvas.getContext('2d')
 
   
   }
-  render(questions, moveDistance) {
+  render(questions,per_index, moveDistance) {
 
-   this.questionsCtx.clearRect(this.x,this.y, this.width, this.height);
+   this.questionsCtx.clearRect(0,0, this.width, this.height);
    this.questionsCtx.fillStyle = BG_COLOR
-   this.questionsCtx.fillRect(this.x,this.y, this.width, this.height)
+   this.questionsCtx.fillRect(0,0, this.width, this.height)
+   
   console.log("question is render")
-   this.questionsDraw(questions, moveDistance)
+    let questions_now = [...questions, ...questions, ...questions]
+    let per_index_now = questions.length + per_index
+
+
+    console.log(questions_now)
+    console.log(per_index_now)
+    this.questionsDraw(questions_now, per_index_now,  moveDistance)
+  
     screenCtx.drawImage(
-      this.questionsCanvas, this.x, this.y,this.width, this.height,
-      this.x, this.y, this.width, this.height
+      this.questionsCanvas, 0 , 0,this.width, this.height,
+    this.x, this.y, this.width, this.height
 
     )
   }
 
-  questionsDraw(questions, moveDistance) {
+  questionsDraw(questions, per_index,  moveDistance) {
     const { questionsCtx}=this
 
-   // console.log(presentQuestions_Y)
-    questionsCtx.textAlign = 'left'
-    questionsCtx.textBaseline = "top"
-    questionsCtx.font = "15px 宋体"
-    questionsCtx.fillStyle = BOARD_DARK_COLOR
-    questionsCtx.fillText("问 题：", this.x,this.y)
-
-    
- for (let i = 0; i < questions.length; i++) {
+   
+   
+   
+    for (let i =0; i < questions.length; i++) {
       questionsCtx.textAlign = 'left'
       questionsCtx.textBaseline = "top"
       questionsCtx.font = "15px 宋体"
-     questionsCtx.fillStyle = BOARD_DARK_COLOR
-   if ( i  == 4) { questionsCtx.fillStyle = "red"}
+      questionsCtx.fillStyle = BOARD_DARK_COLOR
+      if (i == per_index) { questionsCtx.fillStyle = "red" }
       let index = (questions[i].zimi_index + 1).toString()
-     let text=index+":"+questions[i].detail
-   questionsCtx.fillText(text, this.x, this.y + this.perWidth + i * this.perWidth+moveDistance )
- }
+      let text = index + ":" + questions[i].detail
+      let print_Y =  4 * this.perWidth + (i - per_index) * this.perWidth+ moveDistance
+      questionsCtx.fillText(text, 0, print_Y)
+    }  
+
+
     //}
  //* for (let i = presentQuestions_index+1,j=1; i < presentQuestions_index+7; i++,j++) {
 //    questionsCtx.textAlign = 'left'
@@ -71,12 +78,12 @@ class Questions {
   questionsCtx.strokeStyle = BOARD_GREY_COLOR
 
       // 水平线条
-    let topline = Math.floor(this.y + this.perWidth * 5) - 2.5
+    let topline = Math.floor(this.perWidth * 4) -4.5
     questionsCtx.moveTo(0, topline)
     questionsCtx.lineTo(this.width, topline)
     questionsCtx.stroke()
 
-    let bottomline = Math.floor(this.y + this.perWidth * 6 )- 2.5
+    let bottomline = Math.floor(this.perWidth * 5 )-4.5
     questionsCtx.moveTo(0, bottomline)
     questionsCtx.lineTo(this.width, bottomline)
     questionsCtx.stroke()

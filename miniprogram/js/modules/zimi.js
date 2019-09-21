@@ -1,6 +1,6 @@
 import { screenCtx } from './../shared/canvas.js'
 import { getWindowRectSync } from './../shared/util.js'
-import { BG_COLOR } from './../shared/contants.js'
+import { BG_COLOR, BOARD_DARK_COLOR } from './../shared/contants.js'
 import board from './board.js'
 import questions from './questions.js'
 
@@ -54,13 +54,14 @@ class Zimi {
 
     board.render(this.cells,this.presentCell) 
     this.setPresentQuestions() 
-    questions.render(this.presentQuestions,this.moveDistance)  
+    questions.render(this.questions, this.question_index,this.moveDistance)  
+    
 
     screenCtx.textAlign = 'left'
     screenCtx.textBaseline = "top"
     screenCtx.font = "15px 宋体"
-    screenCtx.fillStyle = "red"
-    screenCtx.fillText("问：",0, 0)
+    screenCtx.fillStyle = BOARD_DARK_COLOR
+    screenCtx.fillText("问 题：",10, 80 + this.width * 10 / 12)
 
   }
   requestZimi () {
@@ -102,7 +103,7 @@ handleTouch(event){
     }
 
   if (clientY>questions.y){
-    if(clientY-this.touchStartY<5) //点击直接选择
+    if(Math.abs(clientY-this.touchStartY)<5) //点击直接选择
     { 
       this.question_index = this.question_index + Math.round((clientY-questions.y)/questions.perWidth)-5
         if (this.question_index < 0) { this.question_index = this.questions.length +this.question_index}
@@ -112,7 +113,8 @@ handleTouch(event){
 
   }
   else{
-      this.question_index = this.question_index + Math.round((clientY - questions.y) / questions.perWidth) - 5
+      console.log(Math.round(this.moveDistance / questions.perWidth) )
+      this.question_index = this.question_index- Math.round(this.moveDistance / questions.perWidth) 
       if (this.question_index < 0) { this.question_index = this.questions.length + this.question_index }
       if (this.question_index >= this.questions.length) { this.question_index = this.question_index - this.questions.length }
 
@@ -131,9 +133,10 @@ handleTouch(event){
 
 
 handleTouchmove(event) {
-  if(this.touchStartY>questions.y){
+  if (this.touchStartY >questions.y + questions.perWidth){
   console.log("move")
   console.log(event.changedTouches[0].clientY)
+
   this. moveDistance = event.changedTouches[0].clientY-this.touchStartY
 
   console.log(this.moveDistance)
@@ -147,21 +150,7 @@ handleTouchmove(event) {
 }
 setPresentQuestions(){
 
-   this.presentQuestions=[]
-   for(let i=this.question_index,j=0;j<5;i--,j++){
-    // console.log( i)
-      if(i<0){i=this.questions.length-1}
-//console.log(j+"d   "+i)
-     this.presentQuestions.unshift(this.questions[i])
-  //  console.log(this.questions[i])
-   }
-  for (let i = this.question_index+1,j=0; j < 5; i++ , j++) {
-  // console.log(j)
-    if (i >=this.questions.length) { i = 0 }
-  // console.log(this.questions[i])
-    this.presentQuestions.push(this.questions[i])
-  }
-//console.log(this.presentQuestions)
+   this.presentQuestions=questions  
 
 
 }
