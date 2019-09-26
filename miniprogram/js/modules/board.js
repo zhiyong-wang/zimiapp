@@ -1,4 +1,4 @@
-import { screenCtx } from './../shared/canvas.js'
+import { screenCtx ,ratio} from './../shared/canvas.js'
 import { getWindowRectSync } from './../shared/util.js'
 import {BOARD_LINE_COLOR, BOARD_DARK_COLOR,BOARD_GREY_COLOR,BOARD_LIGHT_COLOR } from './../shared/contants.js'
 
@@ -6,18 +6,21 @@ import {BOARD_LINE_COLOR, BOARD_DARK_COLOR,BOARD_GREY_COLOR,BOARD_LIGHT_COLOR } 
 class Board {
   constructor() {
     const { winHeight,winWidth } = getWindowRectSync()
-    this.width = winWidth*10/12
-    this.height = winWidth*10/12
+    this.width = winWidth * 10 / 12 * ratio
+    this.height = winWidth * 10/12 * ratio
 
-    this.x =  winWidth / 12
-    this.y = 60
+    this.x = winWidth / 12 * ratio
+    this.y = 60 * ratio
 
-    this.cellWidth=winWidth / 12
-    this.cellHeight= winWidth / 12
+    this.cellWidth = winWidth / 12 * ratio
+    this.cellHeight = winWidth / 12 * ratio
 
   
  this.boardCanvas = wx.createCanvas()
-   
+
+    this.boardCanvas.width = this.width
+
+    this.boardCanvas.height = this.height
   this.boardCtx=this.boardCanvas.getContext('2d')
      
 
@@ -25,7 +28,7 @@ class Board {
   render(cells,presentCell){
     this.boardDraw(cells, presentCell)
     screenCtx.drawImage(
-      this.boardCanvas, 0, 0, this.width, this.height,
+      this.boardCanvas, 0, 0, this.width , this.height,
       this.x, this.y, this.width, this.height
     
     )
@@ -66,6 +69,7 @@ class Board {
       this.boardCtx.strokeStyle = BOARD_LINE_COLOR
       
       let line_y = Math.floor(this.cellHeight * i )+0.5
+      if (i == 10) { line_y = Math.floor(this.cellHeight * i) -0.5}
       let x_begin =0
       let x_end = Math.round(this.cellWidth * 10 )
 
@@ -77,6 +81,7 @@ class Board {
       //垂直线条
      
       let line_x = Math.floor(this.cellWidth * i )+0.5
+      if (i == 10) { line_x = Math.floor(this.cellWidth * i) - 0.5 }
       let y_begin = 0
       let y_end = Math.round(this.cellWidth * 10) 
     
@@ -84,7 +89,7 @@ class Board {
       this.boardCtx.moveTo(line_x, y_begin)
       this.boardCtx.lineTo(line_x, y_end)
       this.boardCtx.stroke()
-    //  console.log(i + ':' + line_x)
+  //  console.log(i + ':' + line_x)
     }
   //  this.boardCtx.stroke()
  }

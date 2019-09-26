@@ -1,7 +1,18 @@
 const canvas = wx.createCanvas()
+const sys = wx.getSystemInfoSync()
+export const ratio = sys.pixelRatio
+//export default canvas
+const screenCanvas=canvas
 
-export default canvas
+screenCanvas.width =canvas.width*ratio
+screenCanvas.height = canvas.height * ratio
+export default screenCanvas
+console.log(screenCanvas)
+export const screenCtx = screenCanvas.getContext('2d')
+//screenCtx.scale(ratio, ratio)
+console.log(screenCtx)
 
-export const screenCanvas = canvas
 
-export const screenCtx = canvas.getContext('2d')
+
+
+
