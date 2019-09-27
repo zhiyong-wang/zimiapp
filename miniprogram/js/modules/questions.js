@@ -10,7 +10,7 @@ class Questions {
     this.height = (winHeight - winWidth * 10 / 12 - 100) * ratio
 
     this.x = 10 * ratio
-    this.y = 200 + winWidth * 10 / 12 * ratio
+    this.y = 100*ratio + winWidth * 10 / 12 * ratio
 
     this.perWidth = 25 * ratio
      
@@ -48,31 +48,20 @@ class Questions {
    
     for (let i =0; i < questions.length; i++) {
       questionsCtx.textAlign = 'left'
-      questionsCtx.textBaseline = "top"
+      questionsCtx.textBaseline = "middle"
       questionsCtx.font =15*ratio+"px PingFangTC-light"
       questionsCtx.fillStyle = BOARD_DARK_COLOR
       if (i == per_index) { questionsCtx.fillStyle = "red" }
       let index = (questions[i].zimi_index + 1).toString()
       let text = index + ":" + questions[i].detail
-      let print_Y =  4 * this.perWidth + (i - per_index) * this.perWidth+ moveDistance
+      let print_Y =  4 * this.perWidth + (i - per_index) * this.perWidth+ moveDistance+this.perWidth/2
       questionsCtx.fillText(text, 0, print_Y)
 
     }  
 
 
-    //}
- //* for (let i = presentQuestions_index+1,j=1; i < presentQuestions_index+7; i++,j++) {
-//    questionsCtx.textAlign = 'left'
-//    questionsCtx.textBaseline = "top"
- //   questionsCtx.font = "15px 仿宋"
-//    questionsCtx.fillStyle = BOARD_DARK_COLOR
-//    let index = (questions[i].zimi_index + 1).toString()
- //   let text = index+":" + questions[i].detail
 
-  //  questionsCtx.fillText(text, this.x, presentQuestions_Y+j * 20)
-
- // }
-
+    // 绘制棋盘线条 
   questionsCtx.lineWidth = 1
   questionsCtx.strokeStyle = BOARD_GREY_COLOR
 

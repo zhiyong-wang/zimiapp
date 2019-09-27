@@ -37,7 +37,7 @@ class Board {
   boardDraw(cells,presentCell){
 
    
-   console.log("boardDraw")
+//   console.log(presentCell)
  //  console.log(this)
     for (let i=0;i<10;i++){
       for(let j=0;j<10;j++){
@@ -45,9 +45,7 @@ class Board {
         if (cells[i * 10 + j]!=""){
         
              if(presentCell.includes(i*10+j)){
-               this.boardCtx.fillStyle = BOARD_LIGHT_COLOR
-
-          
+               this.boardCtx.fillStyle = BOARD_LIGHT_COLOR          
              }else{
                this.boardCtx.fillStyle = BOARD_GREY_COLOR
                }

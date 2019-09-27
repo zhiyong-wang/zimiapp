@@ -4,6 +4,8 @@ import { BG_COLOR, BOARD_LINE_COLOR } from './../shared/contants.js'
 import board from './board.js'
 import questions from './questions.js'
 import keyboard from './keyboard.js'
+import answer from './answer.js'
+import center from './center.js'
 
 class Zimi {
   constructor() {
@@ -27,13 +29,13 @@ class Zimi {
     this.question_index=4
 
     this.touchStartY = 0
-
       
     this.startTouchtime=0   
     this.moveDistance = 0 
 
     this.show_keyboard=false
     this.now_key=""
+    this.timeoutId='-1'
 
    
   }
@@ -47,8 +49,8 @@ class Zimi {
       if (this.show_keyboard) {
          this.keybaoardTouch_start(event)}
       else
-       { this.startTouchtime = event.timeStamp
-        this.touchStartY = event.changedTouches[0].clientY * ratio}
+      {  this.hangdleTouch_start(event)
+        }
     })
 
     wx.onTouchEnd((event) => {
@@ -56,15 +58,13 @@ class Zimi {
          this.keybaoardTouch_end(event)
        }
        else{        
-        this.handleTouch(event)}
+        this.handleTouch_end(event)}
     })
 
 
     wx.onTouchMove((event) => {
       if(!this.show_keyboard){ this.handleTouchmove(event)}
     })
-
-
 
   }
 
@@ -75,23 +75,30 @@ class Zimi {
     screenCtx.fillStyle = BG_COLOR
     screenCtx.fillRect(0, 0, this.width, this.height)
 
+    this.moveDistance = 0
+
+    this.setpresentCell()
     board.render(this.cells,this.presentCell) 
+   // console.log(this.presentCell)
 
     if (!this.show_keyboard) {
+      center.render()
       questions.render(this.questions, this.question_index, this.moveDistance)  
+
  
     }
     else {
+     
+     answer.render(this.questions[this.question_index].detail, this.presentCell)
+     
       keyboard.render(this.now_key)  
    }
 
-    screenCtx.textAlign = 'left'
-    screenCtx.textBaseline = "top"
-    screenCtx.font ="30px  PingFangTC-light"
-    screenCtx.fillStyle = BOARD_LINE_COLOR
-    screenCtx.fillText("问 题：",20, 160 + this.width * 10 / 12)
+   
    // console.log(ratio, ratio)
   }
+
+
   requestZimi () {
   let zimi
   wx.cloud.callFunction({
@@ -110,9 +117,40 @@ class Zimi {
     //
      })
 }
+setpresentCell(){
+    this.presentCell = []
+for (let i = 0; i < 100; i++) {
 
-handleTouch(event){
+  if (this.cells[i]&&(this.cells[i].zimi_index == this.question_index || this.cells[i].zimi_index1 == this.question_index)) {
+    this.presentCell.push(i)
+  }
+}
+  }
+
+hangdleTouch_start(event){
+this.startTouchtime = event.timeStamp
+const { clientX, clientY } = event.changedTouches[0]
+let now_clientX = clientX * ratio
+let now_clientY = clientY * ratio
+this.touchStartY = now_clientY
+let board_row = Math.floor((now_clientY - this.board_Y) / this.cellWidth)
+let board_col = Math.floor((now_clientX - this.board_X) / this.cellWidth)
+ 
+   if (this.presentCell.includes(board_row * 10 + board_col) ) {
+     let that = this
+     this.timeoutId=setTimeout(function () { 
+        console.log("callAnswer")
+        that.show_keyboard = true
+        that.render()
+        },600)
+        console.log(this.timeoutId)
+  }
+}
+
+
+handleTouch_end(event){
   console.log(event)
+  clearTimeout(this.timeoutId)
   const { clientX, clientY } = event.changedTouches[0]
   let now_clientX = clientX * ratio
   let now_clientY = clientY * ratio
@@ -125,22 +163,20 @@ handleTouch(event){
     let board_col = Math.floor((now_clientX - this.board_X) / this.cellWidth)
     if (board_row >= 0 && board_col >= 0 && board_row < 10 && board_col < 10) {
       console.log(board_row, board_col)
-      if (this.presentCell.includes(board_row * 10 + board_col) && touchTime > 400) {
-          console.log(touchTime)
-          console.log("callAnswer")        
-          this.show_keyboard=true
-          this.render()
-          return
-        }
-        else {
-        console.log("chick cell")
-          this.presentCell = board.setpresentCell(board_row, board_col,this.cells,this.presentCell)
-          let pre_cell= this.cells[this.presentCell[0]]
-          if (this.presentCell[1]-this.presentCell[0]==1)
-              { this.question_index = this.cells[this.presentCell[0]].zimi_index}
-          else{ this.question_index = this.cells[this.presentCell[0]].zimi_index1}                  }
-
-    }
+      console.log("chick cell")
+      let lastpresentCell=this.presentCell
+      this.presentCell = board.setpresentCell(board_row, board_col,this.cells,this.presentCell)
+      if(lastpresentCell==this.presentCell){
+        this.show_keyboard = true
+        this.render()
+        return
+      }
+      else{     
+        if (this.presentCell[1]-this.presentCell[0]==1)
+            { this.question_index = this.cells[this.presentCell[0]].zimi_index}
+        else{ this.question_index = this.cells[this.presentCell[0]].zimi_index1} 
+                 }       
+     }
   }
 
 //直接选择问题
@@ -148,11 +184,15 @@ handleTouch(event){
     console.log("chick question")
     if (Math.abs(now_clientY-this.touchStartY)<5) //点击直接选择
     { 
+      let pre_question=this.question_index
       this.question_index = this.question_index + Math.ceil((now_clientY-questions.y)/questions.perWidth)-5
         if (this.question_index < 0) { this.question_index = 0}
         if (this.question_index >= this.questions.length) { this.question_index = this.questions.length-1  }
-
-
+      if (this.question_index == pre_question) { 
+        this.show_keyboard=true 
+        this.render()
+        return
+        }
   }
   else{
       console.log(Math.round(this.moveDistance / questions.perWidth) )
@@ -161,16 +201,10 @@ handleTouch(event){
       if (this.question_index >= this.questions.length) { this.question_index =  this.questions.length-1 }
 
   }
-
-    this.presentCell=[]
-    for(let i=0;i<100;i++){
-      if (this.cells[i].zimi_index == this.question_index || this.cells[i].zimi_index1 == this.question_index){
-        this.presentCell.push(i)
-      }
-    }
   }
 
-  this.moveDistance = 0
+
+
   this.render()
 
   }
@@ -196,7 +230,7 @@ handleTouchmove(event) {
     const { clientX, clientY } = event.changedTouches[0]
     let now_clientX = clientX * ratio
     let now_clientY = clientY * ratio - keyboard.y
-    console.log(now_clientX, now_clientY)
+  //  console.log(now_clientX, now_clientY)
     for (let key of keyboard.keys) {
       if (now_clientX >= key.x && now_clientX <= key.x + key.width && now_clientY >= key.y && now_clientY <= key.y + key.height) {
       this.now_key=key.value
@@ -210,7 +244,7 @@ keybaoardTouch_end(event){
   const { clientX, clientY } = event.changedTouches[0]
   let now_clientX = clientX * ratio
   let now_clientY = clientY * ratio - keyboard.y 
-  console.log(now_clientX,now_clientY)
+ // console.log(now_clientX,now_clientY)
   for(let key of keyboard.keys){
      if(now_clientX>=key.x&&now_clientX<=key.x+key.width&&now_clientY>=key.y&&now_clientY<=key.y+key.height){
        this.now_key=""

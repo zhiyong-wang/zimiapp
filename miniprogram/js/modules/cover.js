@@ -40,7 +40,6 @@ class Cover {
     screenCtx.font = "30px PingFangTC-light"
     screenCtx.fillStyle = 'red'
     screenCtx.fillText('开始游戏', 20 * ratio, (winHeight * 0.50) * ratio  )
-
   
     
 

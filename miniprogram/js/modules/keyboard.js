@@ -107,7 +107,7 @@ class Keyboard {
     'height': this.key_height
   })
 
-  console.log(this.keys)
+//  console.log(this.keys)
   }
 
 
