@@ -1,17 +1,18 @@
 import { screenCtx, ratio } from './../shared/canvas.js'
 import { getWindowRectSync } from './../shared/util.js'
 import { BG_COLOR, BOARD_LINE_COLOR, BOARD_GREY_COLOR, BOARD_DARK_COLOR } from './../shared/contants.js'
-
+import top from './top.js'
+import board from './board.js'
 
 class Center {
   constructor() {
     const { winWidth, winHeight } = getWindowRectSync()
 
     this.width = winWidth * ratio
-    this.height = 40 * ratio
+    this.height = 30 * ratio
 
     this.x =0
-    this.y = 60*ratio + this.width * 10 / 12
+    this.y = top.height + board.height
 
 
     this.centerCanvas = wx.createCanvas()
@@ -22,8 +23,8 @@ class Center {
   }
 render(){
   console.log("center is load")
- //this.centerCtx.fillStyle = BOARD_GREY_COLOR
- //this.centerCtx.fillRect(0, 0, this.width, this.height)
+ this.centerCtx.fillStyle = BG_COLOR
+ this.centerCtx.fillRect(0, 0, this.width, this.height)
   this.centerDraw()
   screenCtx.drawImage(
     this.centerCanvas, 0, 0, this.width, this.height,

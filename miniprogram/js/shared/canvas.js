@@ -10,7 +10,8 @@ export default screenCanvas
 console.log(screenCanvas)
 export const screenCtx = screenCanvas.getContext('2d')
 //screenCtx.scale(ratio, ratio)
-console.log(screenCtx)
+//console.log(screenCtx)
+const menuButton=wx.getMenuButtonBoundingClientRect()
 
 
 

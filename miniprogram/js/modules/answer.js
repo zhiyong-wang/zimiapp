@@ -1,5 +1,6 @@
 import { screenCtx, ratio } from './../shared/canvas.js'
 import { getWindowRectSync } from './../shared/util.js'
+import board from './board.js'
 import { ANSWER_BG_COLOR, BOARD_LINE_COLOR, BOARD_DARK_COLOR, BOARD_GREY_COLOR, BOARD_LIGHT_COLOR } from './../shared/contants.js'
 
 class Answer {
@@ -12,24 +13,20 @@ class Answer {
     this.x = 0
    // this.y = (60 + winWidth * 10 / 12) * ratio
     this.y = 0
-    this.answerCell_width = winWidth * 1 / 11* ratio
-    this.answerCell_height = winWidth * 1 / 11 * ratio
+    this.answerCell_width = winWidth * 1 / 10* ratio
+    this.answerCell_height = winWidth * 1 / 10 * ratio
     this.answerCell_padding = winWidth * 1 / 36 * ratio
-
 
     this.answerCanvas = wx.createCanvas()
     this.answerCanvas.width = this.width
     this.answerCanvas.height = this.height
 
-
     this.answerCtx = this.answerCanvas.getContext('2d')
     // this.questionsCtx.scale(this.ratio, this.ratio)
 
- 
-
   }
 
-  render(question, per_cells) {
+  render(question, per_cells,animationTime) {
     
 
     this.answerCtx.clearRect(0, 0, this.width, this.height);
@@ -39,9 +36,9 @@ class Answer {
     this.answerCtx.fillRect(0, 0, this.width, this.height)
     this.answerCtx.globalAlpha = 1
 
-    console.log(per_cells)
+    //console.log(per_cells)
 
-    this.answerDraw(question,per_cells)
+    this.answerDraw(question, per_cells, animationTime)
 
     screenCtx.drawImage(
       this.answerCanvas, 0, 0, this.width, this.height,
@@ -50,23 +47,48 @@ class Answer {
     )
   }
 
-  answerDraw(question,per_cells) {
+  answerDraw(question, per_cells, animationTime) { 
+   
     
-    let startX = (this.width - this.answerCell_width * per_cells.length - this.answerCell_padding * (per_cells.length-1))/2
+    let endX = (this.width - this.answerCell_width * per_cells.length - this.answerCell_padding * (per_cells.length-1))/2
     console.log(per_cells.length)
-    for (let i = 0; i < per_cells.length; i++) {      
+    for (let i=0;i<per_cells.length;i++) {
+      let cell=per_cells[i]
+      let cell_start_X = board.cellWidth + ((cell-Math.floor(cell / 10)*10) * board.cellWidth)
+      let cell_start_Y = 60 * ratio + (Math.floor(cell / 10)* board.cellHeight)
+      let cell_end_X = endX + (this.answerCell_width + this.answerCell_padding) * i
+      let cell_end_Y = ((60 * ratio + this.width) * 2 / 4)
+      
+      let x_distance = (cell_end_X - cell_start_X) * animationTime
+      let y_distance = (cell_end_Y - cell_start_Y) * animationTime
+      let cell_width_change = (this.answerCell_width - board.cellWidth) * animationTime
+      let cell_height_change = (this.answerCell_height - board.cellHeight) * animationTime
+
       this.answerCtx.fillStyle = "white"
-      this.answerCtx.fillRect(startX + (this.answerCell_width + this.answerCell_padding) * i, (60+this.width)*3/5, this.answerCell_width, this.answerCell_height)
+      this.answerCtx.fillRect(cell_start_X + x_distance, cell_start_Y + y_distance, board.cellWidth + cell_width_change, board.cellHeight + cell_height_change)
+    
+    
       this.answerCtx.fillStyle = BOARD_LINE_COLOR
-      this.answerCtx.fillRect(startX + (this.answerCell_width + this.answerCell_padding) * i + this.answerCell_width, (60 + this.width) * 3 / 5 + this.answerCell_height/10, this.answerCell_width/10, this.answerCell_height)
-      this.answerCtx.fillRect(startX + (this.answerCell_width + this.answerCell_padding) * i + this.answerCell_width / 10, (60 + this.width) *3 / 5 + this.answerCell_height, this.answerCell_width, this.answerCell_height/10)
+      let shadow1_x = cell_start_X + board.cellWidth + cell_width_change+x_distance
+      let shadow1_y = cell_start_Y + y_distance + (board.cellHeight + cell_height_change) / 10 * animationTime
+      let shadow1_width = this.answerCell_width / 10 * animationTime
+      let shadow1_height = board.cellHeight + cell_height_change  
+  
+      let shadow2_x = cell_start_X + (board.cellWidth + cell_width_change)/10 * animationTime + x_distance
+      let shadow2_y = cell_start_Y + board.cellHeight + cell_height_change  + y_distance
+      let shadow2_width = board.cellWidth + cell_width_change
+      let shadow2_height = this.answerCell_height/10 * animationTime
 
-
-
+      this.answerCtx.fillRect(shadow1_x, shadow1_y, shadow1_width, shadow1_height)
+      this.answerCtx.fillRect(shadow2_x, shadow2_y, shadow2_width, shadow2_height)
+  
+  //    this.answerCtx.fillRect(endX + (this.answerCell_width + this.answerCell_padding) * i + this.answerCell_width / 10, (60 + this.width) *3 / 5 + this.answerCell_height, this.answerCell_width, this.answerCell_height/10)
 
       this.answerCtx.StrokeStyle = BOARD_LINE_COLOR
       this.answerCtx.beginPath()
-      this.answerCtx.stroke()     
+      this.answerCtx.stroke() 
+
+
 
       this.answerCtx.textAlign = 'center'
       this.answerCtx.textBaseline = "middle"

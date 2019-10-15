@@ -1,6 +1,9 @@
 import { screenCtx, ratio} from './../shared/canvas.js'
 import { getWindowRectSync } from './../shared/util.js'
 import {A,BG_COLOR, BOARD_LINE_COLOR, BOARD_DARK_COLOR, BOARD_GREY_COLOR, BOARD_LIGHT_COLOR } from './../shared/contants.js'
+import top from './top.js'
+import center from './center.js'
+import board from './board.js'
 
 class Questions {
   constructor() {
@@ -10,7 +13,7 @@ class Questions {
     this.height = (winHeight - winWidth * 10 / 12 - 100) * ratio
 
     this.x = 10 * ratio
-    this.y = 100*ratio + winWidth * 10 / 12 * ratio
+    this.y = top.height+board.height+center.height
 
     this.perWidth = 25 * ratio
      

@@ -8,17 +8,9 @@ export const BOARD_GREY_COLOR = '#CECECE'
 
 export const BOARD_LIGHT_COLOR = '#ffffff'
 
-export const HEAD_COLOR = '#ff4d4f'
+export const ANSWER_BG_COLOR = '#F8F9F9'
 
-export const CHESS_BLACK_NUM = 1
 
-export const CHESS_BLACK_COLOR = 'black'
-
-export const CHESS_WHITE_NUM = -1
-
-export const CHESS_WHITE_COLOR = 'white'
-
-export const CHESS_EMPTY_NUM = 0
 
 //export const A=wx.loadFont("images/FZLTCXHJW.TTF")
  

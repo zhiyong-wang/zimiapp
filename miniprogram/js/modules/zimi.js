@@ -1,11 +1,13 @@
 import { screenCtx ,ratio} from './../shared/canvas.js'
 import { getWindowRectSync } from './../shared/util.js'
 import { BG_COLOR, BOARD_LINE_COLOR } from './../shared/contants.js'
+import top from './top.js'
 import board from './board.js'
 import questions from './questions.js'
 import keyboard from './keyboard.js'
 import answer from './answer.js'
 import center from './center.js'
+
 
 class Zimi {
   constructor() {
@@ -23,6 +25,7 @@ class Zimi {
     
     this.cells=[]
     this.presentCell=[]
+    this.answerDetail = []  //录入的当前问题的答案，与presentCell对应
 
     
     this.questions=[]
@@ -36,8 +39,11 @@ class Zimi {
     this.show_keyboard=false
     this.now_key=""
     this.timeoutId='-1'
-
    
+    
+    this.i=0
+    this.animationTime=0
+
   }
   init() {
     wx.offTouchStart()
@@ -75,7 +81,8 @@ class Zimi {
     screenCtx.fillStyle = BG_COLOR
     screenCtx.fillRect(0, 0, this.width, this.height)
 
-    this.moveDistance = 0
+   //
+    top.render()
 
     this.setpresentCell()
     board.render(this.cells,this.presentCell) 
@@ -83,19 +90,36 @@ class Zimi {
 
     if (!this.show_keyboard) {
       center.render()
-      questions.render(this.questions, this.question_index, this.moveDistance)  
+      questions.render(this.questions, this.question_index, this.moveDistance) 
 
- 
+      this.i=0
+      
     }
     else {
+      console.log(this.show_keyboard)
+
+      answer.render(this.questions[this.question_index].detail, this.presentCell, this.animationTime,this.answerDetail)
+      keyboard.render(this.now_key) 
+
+      if (this.i>=32) {
+        console.log("loop")
+        return
+      }
      
-     answer.render(this.questions[this.question_index].detail, this.presentCell)
-     
-      keyboard.render(this.now_key)  
+     else{
+      this.i++
+      this.animationTime=this.i/32
+      let that=this
+        this.timeoutId = requestAnimationFrame(function () {
+        console.log("Answer")
+        that.render()
+      })
+      console.log(this.timeoutId)
+     }
+    
    }
 
-   
-   // console.log(ratio, ratio)
+  
   }
 
 
@@ -110,8 +134,10 @@ class Zimi {
     for (let i = 0; i < 100; i++) {
       if (this.cells[i].zimi_index == this.question_index || this.cells[i].zimi_index == this.question_index1) {
         this.presentCell.push(i)
+        
       }
     }
+    console.log(this.cells)
      this.render()     
 
     //
@@ -125,7 +151,8 @@ for (let i = 0; i < 100; i++) {
     this.presentCell.push(i)
   }
 }
-  }
+}
+
 
 hangdleTouch_start(event){
 this.startTouchtime = event.timeStamp
@@ -141,7 +168,7 @@ let board_col = Math.floor((now_clientX - this.board_X) / this.cellWidth)
      this.timeoutId=setTimeout(function () { 
         console.log("callAnswer")
         that.show_keyboard = true
-        that.render()
+       that.render()
         },600)
         console.log(this.timeoutId)
   }
@@ -175,7 +202,10 @@ handleTouch_end(event){
         if (this.presentCell[1]-this.presentCell[0]==1)
             { this.question_index = this.cells[this.presentCell[0]].zimi_index}
         else{ this.question_index = this.cells[this.presentCell[0]].zimi_index1} 
-                 }       
+        this.render()
+        return
+       } 
+
      }
   }
 
@@ -190,22 +220,25 @@ handleTouch_end(event){
         if (this.question_index >= this.questions.length) { this.question_index = this.questions.length-1  }
       if (this.question_index == pre_question) { 
         this.show_keyboard=true 
-        this.render()
-        return
+
         }
+      this.render()
+      return
   }
   else{
       console.log(Math.round(this.moveDistance / questions.perWidth) )
       this.question_index = this.question_index- Math.round(this.moveDistance / questions.perWidth) 
       if (this.question_index < 0) { this.question_index = 0 }
       if (this.question_index >= this.questions.length) { this.question_index =  this.questions.length-1 }
+      this.moveDistance = 0
+      this.render()
+    
+      return
 
   }
   }
 
 
-
-  this.render()
 
   }
 
@@ -220,8 +253,8 @@ handleTouchmove(event) {
   console.log(this.moveDistance)
  // this.touchStartY = event.changedTouches[0].clientY
  // console.log(this.question_index)
- 
-  this.render()
+
+   this.render()
   }
 }
 
@@ -234,6 +267,7 @@ handleTouchmove(event) {
     for (let key of keyboard.keys) {
       if (now_clientX >= key.x && now_clientX <= key.x + key.width && now_clientY >= key.y && now_clientY <= key.y + key.height) {
       this.now_key=key.value
+      this.i =32
       this.render()
       }
 
@@ -248,7 +282,7 @@ keybaoardTouch_end(event){
   for(let key of keyboard.keys){
      if(now_clientX>=key.x&&now_clientX<=key.x+key.width&&now_clientY>=key.y&&now_clientY<=key.y+key.height){
        this.now_key=""
-     this.tapKey(key.value)
+       this.tapKey(key.value)
         }      
   
   }
@@ -257,12 +291,36 @@ keybaoardTouch_end(event){
   }
   tapKey(key){
     console.log(key)
-    if(key=="返回"){
+    switch (key){
+    case "返回":
       this.show_keyboard=false
       this.render()
-    }
+      break
 
-    this.render()
+    case "确定":
+        this.render()
+        break
+
+    case "取消":
+        this.render()
+        break
+
+    case "后退":
+        this.render()
+        break
+     
+   case "后退":
+        this.render()
+        break
+    default:
+        this.render()
+        break
+
+
+
+    }
+    
+
   }
 
 

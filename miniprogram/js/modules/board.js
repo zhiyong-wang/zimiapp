@@ -1,6 +1,7 @@
 import { screenCtx ,ratio} from './../shared/canvas.js'
 import { getWindowRectSync } from './../shared/util.js'
 import {BOARD_LINE_COLOR, BOARD_DARK_COLOR,BOARD_GREY_COLOR,BOARD_LIGHT_COLOR } from './../shared/contants.js'
+import top from './top.js'
 
 
 class Board {
@@ -10,7 +11,7 @@ class Board {
     this.height = winWidth * 10/12 * ratio
 
     this.x = winWidth / 12 * ratio
-    this.y = 60 * ratio
+    this.y = top.height
 
     this.cellWidth = winWidth / 12 * ratio
     this.cellHeight = winWidth / 12 * ratio
