@@ -14,7 +14,7 @@ class Top {
     this.title_X = this.width /10
     this.title_Y = (menuButton.top + (menuButton.height)/2+5 )*ratio
 
-    this.score_X = this.width / 20
+    this.score_X = this.width / 40
     this.score_Y = (menuButton.bottom+20)*ratio
    
     this.x = 0

@@ -22,7 +22,8 @@ class Cover {
    // console.log(this)
     let cover_img = wx.createImage()
      cover_img.src = BG_IMG_SRC
-     cover_img.onload = function () {    
+     cover_img.onload = function () {   
+       console.log(cover_img) 
         screenCtx.drawImage(
           cover_img,
           0,
@@ -30,11 +31,12 @@ class Cover {
           winWidth * ratio,
           winHeight*ratio,
         )
-        that.drawText()
+       that.drawText()
     }
+  //  this.drawText()
   }
   drawText() {
-
+    console.log("aaa")
     screenCtx.textAlign = 'left'
     screenCtx.textBaseline="top"
     screenCtx.font = "30px PingFangTC-light"

@@ -7,6 +7,8 @@ import questions from './questions.js'
 import keyboard from './keyboard.js'
 import answer from './answer.js'
 import center from './center.js'
+import left from './left.js'
+import right from './right.js'
 
 
 class Zimi {
@@ -85,19 +87,18 @@ class Zimi {
     top.render()
 
     this.setpresentCell()
+    left.render()
     board.render(this.cells,this.presentCell) 
+    right.render()
    // console.log(this.presentCell)
 
     if (!this.show_keyboard) {
       center.render()
       questions.render(this.questions, this.question_index, this.moveDistance) 
-
-      this.i=0
-      
+      this.i=0      
     }
     else {
       console.log(this.show_keyboard)
-
       answer.render(this.questions[this.question_index].detail, this.presentCell, this.animationTime,this.answerDetail)
       keyboard.render(this.now_key) 
 
