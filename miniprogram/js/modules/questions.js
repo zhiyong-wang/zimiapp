@@ -48,13 +48,29 @@ class Questions {
 
   questionsDraw(questions, per_index,  moveDistance) {
     const { questionsCtx}=this   
-   
+  //  let grd = questionsCtx.createLinearGradient(0, 0, 0, this.perWidth * 4)
+  //  grd.addColorStop(0, 'white' )
+ //   grd.addColorStop(1, BOARD_DARK_COLOR)
+
+// Fill with gradient
+ //   questionsCtx.fillStyle=grd
+
+    questionsCtx.textAlign = 'left'
+    questionsCtx.textBaseline = "middle"
+    questionsCtx.font = 15 * ratio + "px PingFangTC-light"
+  
+
     for (let i =0; i < questions.length; i++) {
-      questionsCtx.textAlign = 'left'
-      questionsCtx.textBaseline = "middle"
-      questionsCtx.font =15*ratio+"px PingFangTC-light"
       questionsCtx.fillStyle = BOARD_DARK_COLOR
-      if (i == per_index) { questionsCtx.fillStyle = "red" }
+      if (i == per_index) {
+         questionsCtx.fillStyle = "red"          
+         }
+    //  if (i == per_index+1) {
+     //   grd = questionsCtx.createLinearGradient(0, this.perWidth * 5, 0, this.perWidth * 10)
+     //   grd.addColorStop(0, BOARD_DARK_COLOR)
+   //     grd.addColorStop(1, 'white' )
+   //     questionsCtx.fillStyle = grd
+   //   }
       let index = (questions[i].zimi_index + 1).toString()
       let text = index + ":" + questions[i].detail
       let print_Y =  4 * this.perWidth + (i - per_index) * this.perWidth+ moveDistance+this.perWidth/2
@@ -66,7 +82,7 @@ class Questions {
 
     // 绘制棋盘线条 
   questionsCtx.lineWidth = 1
-  questionsCtx.strokeStyle = BOARD_GREY_COLOR
+  questionsCtx.strokeStyle = BOARD_DARK_COLOR
 
       // 水平线条
     let topline = Math.floor(this.perWidth * 4) -4.5

@@ -8,13 +8,13 @@ const db = cloud.database()
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const openid= wxContext.OPENID
-  const zimi=event.zimi
-  const userInfos = await await db.collection('users').where(
+  const zimi=event.zimis
+  const userInfos = await db.collection('users').where(
     { _openid: openid }).get()
   console.log(userInfos.data)
   const avatarUrl=userInfos.data[0].avatarUrl
   const nickName = userInfos.data[0].nickName
-  const user={"openid":openid,"avatarUrl":avatarUrl,"nickName":nickName}
+  const user = { "openid": userInfos.data[0].openid,"avatarUrl":avatarUrl,"nickName":nickName}
   try {
     return await db.collection('gamerooms').add({
       // data 字段表示需新增的 JSON 数据
@@ -23,7 +23,7 @@ exports.main = async (event, context) => {
         zimi: zimi,
         time: db.serverDate(),
         done: false,
-        last_change_userId:user.openid,
+        userId:user.openid,
       }
     })
   } catch (e) {

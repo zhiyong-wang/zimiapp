@@ -27,7 +27,7 @@ class Top {
 
   }
   render() {
-    console.log("top is load")
+//    console.log("top is load")
     this.topCtx.fillStyle = BG_COLOR
     this.topCtx.fillRect(0, 0, this.width, this.height)
   this.topCtx.fillStyle = BOARD_GREY_COLOR

@@ -3,6 +3,7 @@ import { getWindowRectSync } from './../shared/util.js'
 import { BG_COLOR, BOARD_LINE_COLOR, BOARD_GREY_COLOR, BOARD_DARK_COLOR } from './../shared/contants.js'
 import top from './top.js'
 const BG_IMG_SRC = 'images/yaoqing.png'
+import user from './user.js'
 
 
 class Left {
@@ -46,15 +47,20 @@ class Left {
     let img = wx.createImage()
     console.log(img)
     img.src = BG_IMG_SRC
-    this.im1=img
+    this.img1=img
+    user.onLoad()
+    let user_img = wx.createImage()
+    user_img.src=user.avatarUrl
+    this.user_img=user_img
+   console.log(user)
   }
   
 
 
 leftDraw() {
   
-  this.leftCtx.drawImage(this.im1, this.icon_x, this.icon_y, this.icon_width, this.icon_width)
-
+  this.leftCtx.drawImage(this.img1, this.icon_x, this.icon_y, this.icon_width, this.icon_width)
+  this.leftCtx.drawImage(this.user_img, this.icon_x, this.icon_y+this.width, this.icon_width, this.icon_width)
 }
 
 

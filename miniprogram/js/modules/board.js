@@ -7,17 +7,17 @@ import top from './top.js'
 class Board {
   constructor() {
     const { winHeight,winWidth } = getWindowRectSync()
-    this.width = winWidth * 10 / 12 * ratio
+    this.width = winWidth * 10/12 * ratio
     this.height = winWidth * 10/12 * ratio
 
     this.x = winWidth / 12 * ratio
     this.y = top.height
 
-    this.cellWidth = winWidth / 12 * ratio
-    this.cellHeight = winWidth / 12 * ratio
+    this.cellWidth = this.width / 10 
+    this.cellHeight = this.height / 10
 
   
- this.boardCanvas = wx.createCanvas()
+    this.boardCanvas = wx.createCanvas()
 
     this.boardCanvas.width = this.width
 
@@ -36,23 +36,39 @@ class Board {
   }
  
   boardDraw(cells,presentCell){
-
+    let indexOfpresntCell=[]
+    for(let cell of presentCell){
+      indexOfpresntCell.push(cell.index)
+    }
    
 //   console.log(presentCell)
  //  console.log(this)
     for (let i=0;i<10;i++){
       for(let j=0;j<10;j++){
         //   console.log(this.cells[i * 10 + j])
-        if (cells[i * 10 + j]!=""){
-        
-             if(presentCell.includes(i*10+j)){
+        if (cells[i * 10 + j]!=""){ 
+         
+
+          if (indexOfpresntCell.includes(i*10+j)){
                this.boardCtx.fillStyle = BOARD_LIGHT_COLOR          
              }else{
                this.boardCtx.fillStyle = BOARD_GREY_COLOR
                }
-           }else
-        { this.boardCtx.fillStyle =BOARD_DARK_COLOR}
-        this.boardCtx.fillRect(this.cellWidth*j,this.cellHeight*i, this.cellWidth, this.cellHeight)          
+          this.boardCtx.fillRect(this.cellWidth * j, this.cellHeight * i, this.cellWidth, this.cellHeight)
+
+          this.boardCtx.textAlign = 'center'
+          this.boardCtx.textBaseline = "middle"
+          this.boardCtx.font = 15 * ratio + "px PingFangTC-light"
+          this.boardCtx.fillStyle = BOARD_LINE_COLOR
+          let text = cells[i * 10 + j].value
+          this.boardCtx.fillText(text, this.cellWidth * j + this.cellWidth / 2, this.cellHeight * i + this.cellHeight/2)       
+         
+           }
+        else
+        { this.boardCtx.fillStyle =BOARD_DARK_COLOR
+        this.boardCtx.fillRect(this.cellWidth*j,this.cellHeight*i, this.cellWidth, this.cellHeight)  
+        }
+             
       }
      }
 
@@ -64,7 +80,7 @@ class Board {
     for (let i = 0; i < 11;i++) {
       // 水平线条
       this.boardCtx.beginPath()
-      this.boardCtx.LineWidth=1
+      this.boardCtx.LineWidth=2*ratio
       this.boardCtx.strokeStyle = BOARD_LINE_COLOR
       
       let line_y = Math.floor(this.cellHeight * i )+0.5

@@ -2,7 +2,8 @@
 	"description": "项目配置文件。",
 	"setting": {
 		"urlCheck": true,
-		"es6": true,
+		"es6": false,
+		"enhance": true,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true,
@@ -15,11 +16,10 @@
 			"ignore": [],
 			"disablePlugins": [],
 			"outputPath": ""
-		},
-		"enhance": true
+		}
 	},
 	"compileType": "game",
-	"libVersion": "2.8.2",
+	"libVersion": "2.8.3",
 	"appid": "wx25123c4992a58ca9",
 	"projectname": "%E5%A4%A9%E5%A4%A9%E5%A1%AB%E5%AD%97",
 	"miniprogramRoot": "miniprogram/",

@@ -52,21 +52,16 @@ class Right {
     let help2_count = 2
  for (let i = 9; i >= 10-help1_count;i--){
      let icon_y = this.icon_y+i*this.width
-     console.log(icon_y)
+//     console.log(icon_y)
       this.rightCtx.drawImage(this.help1_img, this.icon_x, icon_y, this.icon_width, this.icon_width)
   }
     for (let i =10- help1_count-1; i > 10 - help1_count-1-help2_count; i--) {
       let icon_y = this.icon_y + i * this.width
-      console.log(icon_y)
+   //   console.log(icon_y)
       this.rightCtx.drawImage(this.help2_img, this.icon_x, icon_y, this.icon_width, this.icon_width)
     }  
 
   }
-
-
-
-
-
 
 }
 export default new Right()
